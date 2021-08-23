@@ -9,98 +9,243 @@ import {
 } from "../src/main";
 
 describe("vehicle parking", () => {
-  it("car should be able to park in medium and large spots", () => {
-    const car = new Car();
-    const smallSpot = new SmallSpot();
-    const mediumSpot = new MediumSpot();
-    const largeSpot = new LargeSpot();
-
-    expect(car.park(smallSpot)).toEqual(false);
-    expect(car.park(mediumSpot)).toEqual(true);
-    expect(car.park(largeSpot)).toEqual(true);
-  });
-
-  it("motorbycle should be able to park in small, medium and large spots", () => {
+  it("motorbycle should be able to park in small spots", () => {
+    // ARRANGE
     const motorbycle = new Motorbycle();
     const smallSpot = new SmallSpot();
-    const mediumSpot = new MediumSpot();
-    const largeSpot = new LargeSpot();
 
-    expect(motorbycle.park(smallSpot)).toEqual(true);
-    expect(motorbycle.park(mediumSpot)).toEqual(true);
-    expect(motorbycle.park(largeSpot)).toEqual(true);
+    // ACT
+    motorbycle.park(smallSpot);
+
+    // ASSERT
+    expect(motorbycle.spot).toEqual(smallSpot);
   });
 
-  it("truck should be able to park in medium and large spots", () => {
-    const truck = new Truck();
-    const smallSpot = new SmallSpot();
+  it("motorbycle should be able to park in medium spots", () => {
+    // ARRANGE
+    const motorbycle = new Motorbycle();
     const mediumSpot = new MediumSpot();
+
+    // ACT
+    motorbycle.park(mediumSpot);
+
+    // ASSERT
+    expect(motorbycle.spot).toEqual(mediumSpot);
+  });
+
+  it("motorbycle should be able to park in large spots", () => {
+    // ARRANGE
+    const motorbycle = new Motorbycle();
     const largeSpot = new LargeSpot();
 
-    expect(truck.park(smallSpot)).toEqual(false);
-    expect(truck.park(mediumSpot)).toEqual(false);
-    expect(truck.park(largeSpot)).toEqual(true);
+    // ACT
+    motorbycle.park(largeSpot);
+
+    // ASSERT
+    expect(motorbycle.spot).toEqual(largeSpot);
+  });
+
+  it("car shouldnt be able to park in small spots", () => {
+    // ARRANGE
+    const car = new Car();
+    const smallSpot = new SmallSpot();
+
+    // ACT
+    const error = () => car.park(smallSpot);
+
+    // ASSERT
+    expect(error).toThrowError();
+  });
+
+  it("car should be able to park in medium spots", () => {
+    // ARRANGE
+    const car = new Car();
+    const mediumSpot = new MediumSpot();
+
+    // ACT
+    car.park(mediumSpot);
+
+    // ASSERT
+    expect(car.spot).toEqual(mediumSpot);
+  });
+
+  it("car should be able to park in large spots", () => {
+    // ARRANGE
+    const car = new Car();
+    const largeSpot = new LargeSpot();
+
+    // ACT
+    car.park(largeSpot);
+
+    // ASSERT
+    expect(car.spot).toEqual(largeSpot);
+  });
+
+  it("truck shouldnt be able to park in small spots", () => {
+    // ARRANGE
+    const truck = new Truck();
+    const smallSpot = new SmallSpot();
+
+    // ACT
+    const error = () => truck.park(smallSpot);
+
+    // ASSERT
+    expect(error).toThrowError();
+  });
+
+  it("truck shouldnt be able to park in medium spots", () => {
+    // ARRANGE
+    const truck = new Truck();
+    const mediumSpot = new MediumSpot();
+
+    // ACT
+    const error = () => truck.park(mediumSpot);
+
+    // ASSERT
+    expect(error).toThrowError();
+  });
+
+  it("truck should be able to park in large spots", () => {
+    // ARRANGE
+    const truck = new Truck();
+    const largeSpot = new LargeSpot();
+
+    // ACT
+    truck.park(largeSpot);
+
+    // ASSERT
+    expect(truck.spot).toEqual(largeSpot);
   });
 });
 
-describe("parking lot", () => {
-  it("can park car in correct spots", () => {
+describe("motorbycle parking lot", () => {
+  it("can park motorbycle if there is a medium spot available", () => {
     // ARRANGE
-    const car = new Car();
-    const smallSpot = new SmallSpot();
+    const motorbycle = new Motorbycle();
     const mediumSpot = new MediumSpot();
-    const largeSpot = new LargeSpot();
 
-    const parkingLot = new TejucoParkingLot();
+    const parkingLot = new TejucoParkingLot([], [mediumSpot], []);
 
     // ACT
-    const canParkSmall = () => parkingLot.parkVehicle(car, smallSpot);
-    const canParkMedium = () => parkingLot.parkVehicle(car, mediumSpot);
-    const canParkLarge = () => parkingLot.parkVehicle(car, largeSpot);
+    const canParkMotorbycle = () => parkingLot.parkVehicle(motorbycle);
 
     // ASSERT
-    expect(canParkSmall).toThrowError();
-    expect(canParkMedium).not.toThrowError();
-    expect(canParkLarge).not.toThrowError();
+    expect(canParkMotorbycle).not.toThrowError();
   });
 
-  it("can park motorbycle in correct spots", () => {
+  it("can park motorbycle if there is a large spot available", () => {
+    // ARRANGE
+    const motorbycle = new Motorbycle();
+    const largeSpot = new LargeSpot();
+
+    const parkingLot = new TejucoParkingLot([], [], [largeSpot]);
+
+    // ACT
+    const canParkMotorbycle = () => parkingLot.parkVehicle(motorbycle);
+
+    // ASSERT
+    expect(canParkMotorbycle).not.toThrowError();
+  });
+
+  it("can park motorbycle if there is only small spot available", () => {
     // ARRANGE
     const motorbycle = new Motorbycle();
     const smallSpot = new SmallSpot();
-    const mediumSpot = new MediumSpot();
-    const largeSpot = new LargeSpot();
 
-    const parkingLot = new TejucoParkingLot();
+    const parkingLot = new TejucoParkingLot([smallSpot], [], []);
 
     // ACT
-    const canParkSmall = () => parkingLot.parkVehicle(motorbycle, smallSpot);
-    const canParkMedium = () => parkingLot.parkVehicle(motorbycle, mediumSpot);
-    const canParkLarge = () => parkingLot.parkVehicle(motorbycle, largeSpot);
+    const canParkMotorbycle = () => parkingLot.parkVehicle(motorbycle);
 
     // ASSERT
-    expect(canParkSmall).not.toThrowError();
-    expect(canParkMedium).not.toThrowError();
-    expect(canParkLarge).not.toThrowError();
+    expect(canParkMotorbycle).not.toThrowError();
+  });
+});
+
+describe("car parking lot", () => {
+  it("can park car if there is a medium spot available", () => {
+    // ARRANGE
+    const car = new Car();
+    const mediumSpot = new MediumSpot();
+
+    const parkingLot = new TejucoParkingLot([], [mediumSpot], []);
+
+    // ACT
+    const canParkCar = () => parkingLot.parkVehicle(car);
+
+    // ASSERT
+    expect(canParkCar).not.toThrowError();
   });
 
-  it("can park truck in correct spots", () => {
+  it("can park car if there is a large spot available", () => {
+    // ARRANGE
+    const car = new Car();
+    const largeSpot = new LargeSpot();
+
+    const parkingLot = new TejucoParkingLot([], [], [largeSpot]);
+
+    // ACT
+    const canParkCar = () => parkingLot.parkVehicle(car);
+
+    // ASSERT
+    expect(canParkCar).not.toThrowError();
+  });
+
+  it("cannot park car if there is only small spot available", () => {
+    // ARRANGE
+    const car = new Car();
+    const smallSpot = new SmallSpot();
+
+    const parkingLot = new TejucoParkingLot([smallSpot], [], []);
+
+    // ACT
+    const canParkCar = () => parkingLot.parkVehicle(car);
+
+    // ASSERT
+    expect(canParkCar).toThrowError();
+  });
+});
+
+describe("truck parking lot", () => {
+  it("cannot park truck if there is a medium spot available", () => {
+    // ARRANGE
+    const truck = new Truck();
+    const mediumSpot = new MediumSpot();
+
+    const parkingLot = new TejucoParkingLot([], [mediumSpot], []);
+
+    // ACT
+    const canParkTruck = () => parkingLot.parkVehicle(truck);
+
+    // ASSERT
+    expect(canParkTruck).toThrowError();
+  });
+
+  it("can park truck if there is a large spot available", () => {
+    // ARRANGE
+    const truck = new Truck();
+    const largeSpot = new LargeSpot();
+
+    const parkingLot = new TejucoParkingLot([], [], [largeSpot]);
+
+    // ACT
+    const canParkTruck = () => parkingLot.parkVehicle(truck);
+
+    // ASSERT
+    expect(canParkTruck).not.toThrowError();
+  });
+
+  it("cannot park truck if there is only small spot available", () => {
     // ARRANGE
     const truck = new Truck();
     const smallSpot = new SmallSpot();
-    const mediumSpot = new MediumSpot();
-    const largeSpot = new LargeSpot();
 
-    const parkingLot = new TejucoParkingLot();
+    const parkingLot = new TejucoParkingLot([smallSpot], [], []);
 
     // ACT
-    const canParkSmall = () => parkingLot.parkVehicle(truck, smallSpot);
-    const canParkMedium = () => parkingLot.parkVehicle(truck, mediumSpot);
-    const canParkLarge = () => parkingLot.parkVehicle(truck, largeSpot);
+    const canParkTruck = () => parkingLot.parkVehicle(truck);
 
     // ASSERT
-    expect(canParkSmall).toThrowError();
-    expect(canParkMedium).toThrowError();
-    expect(canParkLarge).not.toThrowError();
+    expect(canParkTruck).toThrowError();
   });
 });
